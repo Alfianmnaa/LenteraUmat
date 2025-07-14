@@ -99,6 +99,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/donasi-saya" element={<DonasiSaya />} />
         <Route
           path="/donasi-saya"
           element={
@@ -117,22 +118,10 @@ function App() {
         />
         <Route path="/lihat-donasi" element={<LihatDonasi />} />
         <Route path="/lihat-semua-donasi" element={<ListDonasiLengkap />} />
-        <Route
-          path="/lihat-donasi/donasi-kategori/detail-barang/:id"
-          element={<DetailBarang />}
-        />
-        <Route
-          path="/lihat-donasi/donasi-semua/detail-barang/:id"
-          element={<DetailBarang />}
-        />
-        <Route
-          path="/lihat-donasi/donasi-tersedia/detail-barang/:id"
-          element={<DetailBarang />}
-        />
-        <Route
-          path="/lihat-donasi/donasi-disalurkan/detail-barang/:id"
-          element={<DetailBarang />}
-        />
+        <Route path="/lihat-donasi/donasi-kategori/detail-barang/:id" element={<DetailBarang />} />
+        <Route path="/lihat-donasi/donasi-semua/detail-barang/:id" element={<DetailBarang />} />
+        <Route path="/lihat-donasi/donasi-tersedia/detail-barang/:id" element={<DetailBarang />} />
+        <Route path="/lihat-donasi/donasi-disalurkan/detail-barang/:id" element={<DetailBarang />} />
         <Route path="/buku-saya" element={<BukuSaya />} />
         <Route path="/artikel/detail-artikel/:id" element={<DetailArtikel />} />
         <Route path="/view-profil/:id" element={<ViewProfil />} />

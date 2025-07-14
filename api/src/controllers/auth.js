@@ -40,7 +40,19 @@ exports.userRegistrasi = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json(error);
+    // Penanganan error duplikasi (kode error MongoDB 11000)
+    if (error.code === 11000) {
+      let field = Object.keys(error.keyValue)[0]; // Mendapatkan nama field yang duplikat (username atau email)
+      let message = `Data duplikat: ${field} '${error.keyValue[field]}' sudah terdaftar.`;
+      if (field === "username") {
+        message = "Username ini sudah digunakan. Mohon pilih username lain.";
+      } else if (field === "email") {
+        message = "Email ini sudah terdaftar. Mohon gunakan email lain atau masuk.";
+      }
+      return res.status(409).json({ message }); // 409 Conflict
+    }
+    // Penanganan error lainnya
+    res.status(500).json({ message: "Terjadi kesalahan server saat registrasi.", error: error.message });
   }
 };
 

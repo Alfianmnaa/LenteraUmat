@@ -115,7 +115,6 @@ exports.hapusMateri = async (req, res) => {
     }
 
     await EbookSchema.findByIdAndDelete(req.params.id);
-
     res.status(200).json("Materi berhasil dihapus!");
   } catch (error) {
     console.error("Error saat menghapus materi:", error);

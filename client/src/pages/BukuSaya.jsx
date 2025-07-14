@@ -1,17 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { axiosInstance } from "../config"; // Pastikan path ini benar
-import { UserContext } from "../context/UserContext"; // Pastikan path ini benar
-import BookCard from "../components/UmmahBook/BookCard"; // Menggunakan BookCard yang sudah ada
-import BookCardSkeleton from "../components/UmmahBook/BookCardSkeleton"; // Menggunakan BookCardSkeleton yang sudah ada
+import { axiosInstance } from "../config";
+import { UserContext } from "../context/UserContext";
+import BookCard from "../components/UmmahBook/BookCard";
+import BookCardSkeleton from "../components/UmmahBook/BookCardSkeleton";
+import donaturSampul from "../assets/BukuSaya/donaturSampul.png";
+import komunitasSampul from "../assets/BukuSaya/komunitasSampul.png";
+import editProfilButton from "../assets/PermohonanSaya/editProfilButton.png";
+import personProfile from "../assets/Navbar/personProfile.png";
 
-// Asumsi path untuk aset gambar
-import donaturSampul from "../assets/BukuSaya/donaturSampul.png"; // Pastikan path ini benar
-import komunitasSampul from "../assets/BukuSaya/komunitasSampul.png"; // Pastikan path ini benar
-import editProfilButton from "../assets/PermohonanSaya/editProfilButton.png"; // Pastikan path ini benar
-import personProfile from "../assets/Navbar/personProfile.png"; // Pastikan path ini benar
-
-// Komponen Profil (diambil dari kode Anda)
 export function Profil() {
   const [detilUser, setDetilUser] = useState(null);
   const { user } = useContext(UserContext);

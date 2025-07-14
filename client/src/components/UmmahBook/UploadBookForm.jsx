@@ -1,11 +1,10 @@
 import React, { useState, useContext, useRef } from "react";
-import { axiosInstance } from "../../config"; // Pastikan path ini benar
-import upload from "../../utils/upload"; // Pastikan path ini benar
-import { UserContext } from "../../context/UserContext"; // Pastikan path ini benar
-import Swal from "sweetalert2"; // Untuk notifikasi loading (Swal.fire)
-import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer dan
+import { axiosInstance } from "../../config";
+import upload from "../../utils/upload";
+import { UserContext } from "../../context/UserContext";
+import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
 
-// Komponen pembantu untuk menampilkan pratinjau file yang dipilih
 const FilePreview = ({ file, onClear }) => (
   <div className="mt-2 text-sm text-center">
     <p className="font-semibold truncate">{file.name}</p>
@@ -18,24 +17,23 @@ const FilePreview = ({ file, onClear }) => (
 function UploadBookForm({ onUploadSuccess }) {
   const { user } = useContext(UserContext);
   const [judul, setJudul] = useState("");
-  const [sampul, setSampul] = useState(null); // File object for cover image
-  const [sampulPreviewUrl, setSampulPreviewUrl] = useState(null); // URL untuk pratinjau sampul
-  const [filePdf, setFilePdf] = useState(null); // File object for PDF
-  const [filePdfPreview, setFilePdfPreview] = useState(null); // Pratinjau untuk PDF (nama file saja)
+  const [sampul, setSampul] = useState(null);
+  const [sampulPreviewUrl, setSampulPreviewUrl] = useState(null);
+  const [filePdf, setFilePdf] = useState(null);
+  const [filePdfPreview, setFilePdfPreview] = useState(null);
   const [penerbit, setPenerbit] = useState("");
   const [isbn, setIsbn] = useState("");
   const [edisi, setEdisi] = useState("");
   const [penulis, setPenulis] = useState("");
   const [kategori, setKategori] = useState("");
-  const [loading, setLoading] = useState(false); // State untuk indikator loading
+  const [loading, setLoading] = useState(false);
 
-  const sampulInputRef = useRef(null); // Ref untuk input file sampul
-  const pdfInputRef = useRef(null); // Ref untuk input file PDF
+  const sampulInputRef = useRef(null);
+  const pdfInputRef = useRef(null);
 
-  // Fungsi untuk menangani perubahan file sampul (baik dari input maupun drag-drop)
   const handleSampulChange = (file) => {
     if (sampulPreviewUrl) {
-      URL.revokeObjectURL(sampulPreviewUrl); // Hapus URL pratinjau sebelumnya untuk mencegah memory leak
+      URL.revokeObjectURL(sampulPreviewUrl);
     }
     if (file) {
       setSampul(file);
@@ -46,7 +44,6 @@ function UploadBookForm({ onUploadSuccess }) {
     }
   };
 
-  // Fungsi untuk menangani perubahan file PDF
   const handlePdfChange = (file) => {
     if (file) {
       setFilePdf(file);
@@ -57,29 +54,27 @@ function UploadBookForm({ onUploadSuccess }) {
     }
   };
 
-  // Drag & Drop Handlers untuk Sampul
   const handleDragOverSampul = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.classList.add("border-teal-500", "bg-gray-50"); // Tambah efek visual saat drag over
+    e.currentTarget.classList.add("border-teal-500", "bg-gray-50");
   };
 
   const handleDragLeaveSampul = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50"); // Hapus efek visual
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50");
   };
 
   const handleDropSampul = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50"); // Hapus efek visual
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50");
 
     const files = e.dataTransfer.files;
     if (files && files.length > 0) {
       const file = files[0];
       if (file.type.startsWith("image/")) {
-        // Pastikan hanya menerima gambar
         handleSampulChange(file);
       } else {
         toast.error("Hanya file gambar (JPEG, PNG) yang diizinkan untuk sampul.");
@@ -87,7 +82,6 @@ function UploadBookForm({ onUploadSuccess }) {
     }
   };
 
-  // Drag & Drop Handlers untuk PDF
   const handleDragOverPdf = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -109,7 +103,6 @@ function UploadBookForm({ onUploadSuccess }) {
     if (files && files.length > 0) {
       const file = files[0];
       if (file.type === "application/pdf") {
-        // Pastikan hanya menerima PDF
         handlePdfChange(file);
       } else {
         toast.error("Hanya file PDF yang diizinkan untuk materi.");
@@ -120,7 +113,6 @@ function UploadBookForm({ onUploadSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validasi dasar
     if (!judul || !sampul || !filePdf || !penulis || !kategori) {
       toast.warn("Harap lengkapi semua bidang yang wajib diisi!");
       return;
@@ -133,7 +125,6 @@ function UploadBookForm({ onUploadSuccess }) {
 
     setLoading(true);
     Swal.fire({
-      // Menggunakan Swal.fire untuk loading overlay
       title: "Mengunggah Materi...",
       text: "Mohon tunggu, materi Anda sedang diproses.",
       allowOutsideClick: false,
@@ -143,14 +134,11 @@ function UploadBookForm({ onUploadSuccess }) {
     });
 
     try {
-      // Unggah sampul buku
       const coverImageUrl = await upload(sampul);
-      // Unggah file PDF
       const pdfUrl = await upload(filePdf);
 
-      // Siapkan data untuk dikirim ke API
       const formDataToSend = {
-        materiUid: user._id, // Menggunakan ID pengguna sebagai materiUid
+        materiUid: user._id,
         coverMateri: coverImageUrl,
         judulMateri: judul,
         linkMateri: pdfUrl,
@@ -159,34 +147,32 @@ function UploadBookForm({ onUploadSuccess }) {
         judulISBN: isbn,
         edisi: edisi,
         penulis: penulis,
-        statusMateri: "belum terverifikasi", // Default status untuk materi baru
-        disimpan: [], // Awalnya kosong
+        statusMateri: "belum terverifikasi",
+        disimpan: [],
       };
 
-      // Kirim data ke API
       const res = await axiosInstance.post("/materi/create", formDataToSend);
 
-      toast.success("Materi Anda berhasil diunggah dan menunggu verifikasi admin."); // Menggunakan react-toastify
+      toast.success("Materi Anda berhasil diunggah dan menunggu verifikasi admin.");
 
-      // Reset form setelah sukses
       setJudul("");
-      handleSampulChange(null); // Reset sampul dan pratinjau
-      handlePdfChange(null); // Reset PDF dan pratinjau
+      handleSampulChange(null);
+      handlePdfChange(null);
       setPenerbit("");
       setIsbn("");
       setEdisi("");
       setPenulis("");
       setKategori("");
-      // Panggil callback jika ada
+
       if (onUploadSuccess) {
         onUploadSuccess(res.data.materi);
       }
     } catch (error) {
       console.error("Gagal mengunggah materi:", error);
-      toast.error("Terjadi kesalahan saat mengunggah materi. Silakan coba lagi."); // Menggunakan react-toastify
+      toast.error("Terjadi kesalahan saat mengunggah materi. Silakan coba lagi.");
     } finally {
       setLoading(false);
-      Swal.close(); // Tutup loading Swal
+      Swal.close();
     }
   };
 
@@ -234,7 +220,6 @@ function UploadBookForm({ onUploadSuccess }) {
             <option value="SMP/MTs">SMP/MTs</option>
             <option value="SMA/MA">SMA/MA</option>
             <option value="Umum">Umum</option>
-            <option value="SMK">SMK</option>
           </select>
         </div>
 
@@ -243,7 +228,7 @@ function UploadBookForm({ onUploadSuccess }) {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Upload Sampul Buku <span className="text-red-500">*</span>
           </label>
-          {/* Area Drag and Drop yang bisa diklik */}
+
           <label
             htmlFor="sampul-buku"
             className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer transition-all duration-200 hover:border-teal-500 hover:bg-gray-50"
@@ -271,16 +256,7 @@ function UploadBookForm({ onUploadSuccess }) {
               <p className="text-xs text-gray-500">JPEG, JPG, PNG (maks 5MB)</p>
             </div>
           </label>
-          <input
-            id="sampul-buku"
-            name="sampul-buku"
-            type="file"
-            ref={sampulInputRef} // Menghubungkan ref
-            className="sr-only"
-            onChange={(e) => handleSampulChange(e.target.files[0])}
-            accept="image/jpeg, image/png"
-            required
-          />
+          <input id="sampul-buku" name="sampul-buku" type="file" ref={sampulInputRef} className="sr-only" onChange={(e) => handleSampulChange(e.target.files[0])} accept="image/jpeg, image/png" required />
           {sampul && <FilePreview file={sampul} onClear={() => handleSampulChange(null)} />}
         </div>
 
@@ -289,7 +265,7 @@ function UploadBookForm({ onUploadSuccess }) {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Upload File PDF <span className="text-red-500">*</span>
           </label>
-          {/* Area Drag and Drop yang bisa diklik */}
+
           <label
             htmlFor="file-pdf"
             className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer transition-all duration-200 hover:border-teal-500 hover:bg-gray-50"
@@ -307,16 +283,7 @@ function UploadBookForm({ onUploadSuccess }) {
               <p className="text-xs text-gray-500">Hanya file PDF</p>
             </div>
           </label>
-          <input
-            id="file-pdf"
-            name="file-pdf"
-            type="file"
-            ref={pdfInputRef} // Menghubungkan ref
-            className="sr-only"
-            onChange={(e) => handlePdfChange(e.target.files[0])}
-            accept=".pdf"
-            required
-          />
+          <input id="file-pdf" name="file-pdf" type="file" ref={pdfInputRef} className="sr-only" onChange={(e) => handlePdfChange(e.target.files[0])} accept=".pdf" required />
           {filePdfPreview && <FilePreview file={filePdfPreview} onClear={() => handlePdfChange(null)} />}
         </div>
 
@@ -385,7 +352,7 @@ function UploadBookForm({ onUploadSuccess }) {
         <div className="flex justify-end pt-2">
           <button
             type="submit"
-            disabled={loading} // Disable tombol saat loading
+            disabled={loading}
             className="inline-flex items-center py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Mengunggah..." : "Kirim"}
@@ -395,7 +362,7 @@ function UploadBookForm({ onUploadSuccess }) {
           </button>
         </div>
       </form>
-      <ToastContainer /> {/* Tambahkan ToastContainer di akhir komponen */}
+      <ToastContainer />
     </div>
   );
 }

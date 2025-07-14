@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { FaInstagram, FaFacebook, FaTwitter, FaTrash, FaCheckCircle } from "react-icons/fa"; // Tambahkan FaCheckCircle
+import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { axiosInstance } from "../../config";
 import { UserContext } from "../../context/UserContext";
@@ -88,10 +88,7 @@ export default function DetailArtikel() {
           <Link to={`/view-profil/${artikel.artikelUid}`} className="informasiPengupload flex gap-3 items-center">
             <img src={artikel.fotoProfil} alt={artikel.namaLengkap} className="w-12 h-12 rounded-full object-cover" />
             <div>
-              <p className="text-sm font-bold flex items-center">
-                {artikel.namaLengkap}
-                <FaCheckCircle className="text-primary-light ml-2" title="Terverifikasi" />
-              </p>
+              <p className="text-sm font-bold flex items-center">{artikel.namaLengkap}</p>
               <p className="text-xs text-gray-500">@{artikel.username}</p>
             </div>
           </Link>

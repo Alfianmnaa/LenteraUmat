@@ -46,8 +46,8 @@ export default function Daftar() {
       Swal.fire({
         icon: "success",
         title: "Berhasil!",
-        text: "Artikel berhasil ditambahkan",
-        timer: 1500,
+        text: "Akun berhasil dibuat. Silakan masuk.", // Pesan sukses yang lebih relevan
+        timer: 2000, // Tambah waktu sedikit agar user bisa membaca
         showConfirmButton: false,
       });
       setLoading(false);
@@ -55,6 +55,24 @@ export default function Daftar() {
     } catch (err) {
       console.error("Daftar gagal", err);
       setLoading(false);
+
+      let errorMessage = "Pendaftaran gagal. Silakan coba lagi."; // Pesan default
+
+      // Cek apakah ada respons dari server dan statusnya 409 (Conflict)
+      if (err.response && err.response.status === 409) {
+        errorMessage = err.response.data.message || "Username atau email sudah terdaftar.";
+      } else if (err.response && err.response.data && err.response.data.message) {
+        // Tangani error lain yang mungkin dikirim dari backend dengan pesan spesifik
+        errorMessage = err.response.data.message;
+      }
+
+      Swal.fire({
+        icon: "error",
+        title: "Pendaftaran Gagal!",
+        text: errorMessage,
+        timer: 3000, // Beri waktu lebih lama untuk pesan error
+        showConfirmButton: true,
+      });
     }
   };
 
@@ -66,19 +84,9 @@ export default function Daftar() {
         <RoleSelector role={role} setRole={setRole} />
 
         {role === "donatur" ? (
-          <FormDaftarDonatur
-            formData={formData}
-            setFormData={setFormData}
-            handleDaftar={handleDaftar}
-            loading={loading}
-          />
+          <FormDaftarDonatur formData={formData} setFormData={setFormData} handleDaftar={handleDaftar} loading={loading} />
         ) : (
-          <FormDaftarKomunitas
-            formData={formData}
-            setFormData={setFormData}
-            handleDaftar={handleDaftar}
-            loading={loading}
-          />
+          <FormDaftarKomunitas formData={formData} setFormData={setFormData} handleDaftar={handleDaftar} loading={loading} />
         )}
 
         <div className="flex justify-center mt-5">
@@ -98,7 +106,6 @@ function HeaderDaftar({ role }) {
   return (
     // 2. Gunakan Flexbox pada div pembungkus utama
     <div className="flex justify-between items-center mb-8">
-
       {/* Teks di sebelah kiri */}
       <div>
         <p className="md:text-heading-[36px] sm:text-3xl text-[28px] font-extrabold mb-2 mt-5">
@@ -108,13 +115,12 @@ function HeaderDaftar({ role }) {
 
       {/* 3. Gambar di sebelah kanan */}
       <div>
-        <img 
-          src={mascotImage} 
-          alt="Maskot Pendaftaran" 
+        <img
+          src={mascotImage}
+          alt="Maskot Pendaftaran"
           className="w-24 sm:w-28" // Atur ukuran lebar gambar di sini
         />
       </div>
-      
     </div>
   );
 }

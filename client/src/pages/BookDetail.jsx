@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../config";
 import BookCardSkeleton from "../components/UmmahBook/BookCardSkeleton";
+import { UserContext } from "../context/UserContext";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 function BookDetail() {
+  const { user } = useContext(UserContext); // Menggunakan user dari context
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -36,6 +40,38 @@ function BookDetail() {
       setError("ID buku tidak valid.");
     }
   }, [id]);
+
+  const handleDelete = async () => {
+    // Konfirmasi penghapusan dengan SweetAlert2
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Anda tidak akan bisa mengembalikan ini!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setLoading(true); // Set loading saat proses penghapusan
+          await axiosInstance.delete(`/materi/delete/${id}`);
+
+          // Tampilkan pesan sukses dengan SweetAlert2
+          Swal.fire("Dihapus!", "Postingan Anda telah dihapus.", "success").then(() => {
+            navigate("/ummah-book"); // Redirect setelah SweetAlert ditutup
+          });
+        } catch (err) {
+          console.error("Gagal menghapus postingan:", err);
+          // Tampilkan pesan error dengan SweetAlert2
+          Swal.fire("Gagal!", "Gagal menghapus postingan. Silakan coba lagi.", "error");
+          setError("Gagal menghapus postingan. Silakan coba lagi.");
+          setLoading(false); // Matikan loading jika gagal
+        }
+      }
+    });
+  };
 
   const downloadFile = async (url, fileName) => {
     const response = await fetch(url);
@@ -104,6 +140,9 @@ function BookDetail() {
 
   const fileName = book.linkMateri ? getFileNameFromUrl(book.linkMateri) : "materi.pdf";
 
+  // Menggunakan user._id dari UserContext untuk perbandingan
+  const isOwner = user && book.materiUid === user._id;
+
   return (
     <main className="bg-white py-8 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -118,18 +157,12 @@ function BookDetail() {
         <div className="bg-[#E6F6F6] rounded-2xl p-5 md:p-8 shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 flex justify-center items-start">
-              <img
-                src={book.coverMateri || "https://placehold.co/200x280/cccccc/333333?text=No+Cover"}
-                alt={book.judulMateri}
-                className="w-full max-w-xs h-auto object-cover rounded-lg shadow-lg" //
-              />
+              <img src={book.coverMateri || "https://placehold.co/200x280/cccccc/333333?text=No+Cover"} alt={book.judulMateri} className="w-full max-w-xs h-auto object-cover rounded-lg shadow-lg" />
             </div>
 
-            {/* Book Info */}
             <div className="md:col-span-2">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{book.judulMateri}</h1>
               {book.penulis && <p className="text-lg text-gray-700 mb-4">Oleh: {book.penulis}</p>}
-
               <div className="flex flex-wrap items-center gap-4 mt-4 mb-8">
                 {book.linkMateri && (
                   <>
@@ -153,9 +186,16 @@ function BookDetail() {
                     </a>
                   </>
                 )}
+                {isOwner && (
+                  <button onClick={handleDelete} className="inline-flex items-center bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Hapus Postingan
+                  </button>
+                )}
               </div>
 
-              {/* Detail Section */}
               <h2 className="text-lg font-bold text-gray-700 border-b pb-2 mb-4">DETAIL BUKU</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                 <div>

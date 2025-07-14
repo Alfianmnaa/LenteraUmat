@@ -139,12 +139,7 @@ function UmmahBook() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const handleUploadSuccess = (newBook) => {
-    // Setelah upload, materi akan berstatus "belum terverifikasi",
-    // jadi tidak perlu langsung menambahkan ke daftar buku yang terverifikasi di sini.
-    // Jika ingin langsung refresh daftar setelah admin konfirmasi, bisa memicu fetchBooks lagi.
-    // Untuk saat ini, tidak ada perubahan karena buku yang diupload masuk ke antrian verifikasi.
-  };
+  const handleUploadSuccess = (newBook) => {};
 
   const handleBookmarkToggle = (bookId, isBookmarked) => {
     if (!user) return;
@@ -172,7 +167,7 @@ function UmmahBook() {
     setDropdowns({ ...dropdowns, category: false });
   };
 
-  const categories = ["Semua", "SD/MI", "SMP/MTs", "SMA/MA", "Umum", "SMK"]; // Menambahkan SMK
+  const categories = ["Semua", "SD/MI", "SMP/MTs", "SMA/MA", "Umum"];
 
   return (
     <>

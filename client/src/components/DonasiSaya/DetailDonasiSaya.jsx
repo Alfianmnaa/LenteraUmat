@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import whatsappIcon from "../../assets/DonasiSaya/whatsapp.png";
-import checkMarkIcon from "../../assets/DonasiSaya/checkMark.png";
-import bookmarkIcon from "../../assets/CardDonasi/bookmark.png";
 import shareIcon from "../../assets/CardDonasi/share.png";
 import { axiosInstance } from "../../config";
 import Swal from "sweetalert2";
 import CardSkleton2 from "../LihatDonasi/CardSkleton2";
 import { UserContext } from "../../context/UserContext";
-import { FaCheckCircle } from "react-icons/fa"; // Tambahkan import ini di atas
 
 export default function DetailDonasiSaya() {
   const { user } = useContext(UserContext);
@@ -236,7 +233,6 @@ function ListKomunitas({ items, permohonan, detilDonasi, donasiId }) {
                   <td className="p-2 border-r-primary border-r">
                     <Link to={`/view-profil/${item.detilUid}`} className="text-blue-500 hover:underline flex items-center justify-center">
                       {item.namaLengkap}
-                      <FaCheckCircle className="text-primary-light ml-2" title="Terverifikasi" />
                     </Link>
                   </td>
                   <td className="p-2 border-r-primary border-r">

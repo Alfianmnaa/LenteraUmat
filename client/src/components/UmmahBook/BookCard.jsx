@@ -19,35 +19,27 @@ const Toast = Swal.mixin({
   },
 });
 
-/**
- * Displays a single book card that links to a detail page.
- * @param {object} props
- * @param {object} props.book - The book object.
- * @param {function} props.onBookmarkToggle - Callback when bookmark status changes.
- */
 function BookCard({ book, onBookmarkToggle }) {
   const { user } = useContext(UserContext);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
-    // Periksa apakah buku sudah disimpan oleh pengguna saat komponen dimuat
     if (user && book && book.disimpan && book.disimpan.includes(user._id)) {
       setIsBookmarked(true);
     } else {
       setIsBookmarked(false);
     }
-  }, [user, book]); // Bergantung pada user dan book
+  }, [user, book]);
 
   const handleToggleBookmark = async (e) => {
-    e.preventDefault(); // Mencegah navigasi ke halaman detail buku
-    e.stopPropagation(); // Mencegah event menyebar ke Link
+    e.preventDefault();
+    e.stopPropagation();
     try {
       const response = await axiosInstance.post(`/materi/toggle-simpan/${book._id}`, { userId: user._id });
       const newBookmarkStatus = response.data.disimpan.includes(user._id);
-      setIsBookmarked(newBookmarkStatus); // Perbarui status bookmark berdasarkan respons API
-      // Tidak ada Toast.fire untuk sukses, hanya perubahan ikon
+      setIsBookmarked(newBookmarkStatus);
       if (onBookmarkToggle) {
-        onBookmarkToggle(book._id, newBookmarkStatus); // Panggil callback untuk memberitahu parent
+        onBookmarkToggle(book._id, newBookmarkStatus);
       }
     } catch (error) {
       console.error("Gagal toggle simpan materi:", error);
@@ -61,10 +53,9 @@ function BookCard({ book, onBookmarkToggle }) {
   const handleShare = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const shareUrl = `${window.location.origin}/book/${book._id}`; // URL halaman detail buku
+    const shareUrl = `${window.location.origin}/book/${book._id}`;
 
     if (navigator.share) {
-      // Web Share API
       navigator
         .share({
           title: book.judulMateri,
@@ -74,8 +65,7 @@ function BookCard({ book, onBookmarkToggle }) {
         .then(() => console.log("Berhasil berbagi"))
         .catch((error) => console.error("Gagal berbagi:", error));
     } else {
-      // Fallback: Salin ke clipboard
-      document.execCommand("copy"); // Menggunakan execCommand karena navigator.clipboard.writeText mungkin tidak berfungsi di iframe
+      document.execCommand("copy");
       const el = document.createElement("textarea");
       el.value = shareUrl;
       document.body.appendChild(el);

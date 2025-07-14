@@ -108,16 +108,8 @@ function Navbar({
         {/* Logo */}
         <div className="w-fit">
           <Link to="/">
-            {navVariant === 1 && (
-              <img src={LenteraUmatLogo} className="w-32 940:w-36" alt="Logo" />
-            )}
-            {navVariant === 2 && (
-              <img
-                src={LenteraUmatLogo2}
-                className="w-32 940:w-36 "
-                alt="Logo"
-              />
-            )}
+            {navVariant === 1 && <img src={LenteraUmatLogo} className="w-32 940:w-36" alt="Logo" />}
+            {navVariant === 2 && <img src={LenteraUmatLogo2} className="w-32 940:w-36 " alt="Logo" />}
           </Link>
         </div>
 
@@ -128,14 +120,7 @@ function Navbar({
           }`}
         >
           <div className="w-full flex-col flex 940:flex-row py-16 940:py-0 text-center justify-center gap-4 md:gap-10">
-            <Link
-              to={paths.home}
-              className={
-                menuOpen
-                  ? "text-black"
-                  : "text-white" + navLinkClass(isLinkActive(paths.home))
-              }
-            >
+            <Link to={paths.home} className={menuOpen ? "text-black" : "text-white" + navLinkClass(isLinkActive(paths.home))}>
               Beranda
             </Link>
             <Link to={paths.book} className={menuOpen ? "text-black" : "text-white" + navLinkClass(isLinkActive(paths.book))}>
@@ -186,32 +171,9 @@ function Navbar({
             </div>
           )}
           {/* Hamburger Button */}
-          <button
-            className="940:hidden z-20 bg-transparent pr-2"
-            onClick={toggleMenu}
-          >
-            <svg
-              className={`w-6 h-6 ${
-                navVariant === 1 || menuOpen ? "text-primary" : "text-white"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
+          <button className="940:hidden z-20 bg-transparent pr-2" onClick={toggleMenu}>
+            <svg className={`w-6 h-6 ${navVariant === 1 || menuOpen ? "text-primary" : "text-white"}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              {menuOpen ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />}
             </svg>
           </button>
         </div>
@@ -262,7 +224,7 @@ const ProfileButton = ({ user, handleLogout }) => {
               <img src={donateIcon} alt="Donasi Icon" className="w-4 h-4" />
               Donasi Saya
             </Link>
-            <Link to="/Buku-saya" className="flex items-center gap-2 text-gray-800 hover:text-black" onClick={closeMenu}>
+            <Link to="/buku-saya" className="flex items-center gap-2 text-gray-800 hover:text-black" onClick={closeMenu}>
               <img src={bookIcon} alt="Donasi Icon" className="w-4 h-4" />
               Buku Saya
             </Link>

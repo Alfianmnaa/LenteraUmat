@@ -45,13 +45,8 @@ export default function CardArtikel({ id, title, description, imageSrc, author, 
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center">
           <img src={avatarSrc || "https://via.placeholder.com/40"} alt="author" className="w-8 h-8 rounded-full object-cover mr-2" />
-          <div>
-            <div className="flex items-center">
-              <div className="text-sm font-medium">{author}</div>
-              <FaCheckCircle className="text-primary-light ml-2" title="Terverifikasi" /> {/* Icon verified */}
-            </div>
-            <div className="text-xs text-gray-500">{username}</div>
-          </div>
+
+          <div className="text-xs text-gray-500">{username}</div>
         </div>
         <div className="flex space-x-2">
           <button onClick={handleShare} className="p-1 rounded-full hover:bg-gray-100" aria-label="Bagikan">
